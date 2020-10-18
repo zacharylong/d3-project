@@ -17,6 +17,33 @@
             
         </div>
 
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-firestore.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use
+            https://firebase.google.com/docs/web/setup#available-libraries -->
+        <!-- <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-analytics.js"></script> -->
+
+        <script>
+            // Your web app's Firebase configuration
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+            var firebaseConfig = {
+                apiKey: "AIzaSyAPv_sKtLnv9PkirfjC77KTbj62oUKzars",
+                authDomain: "udemy-d3-firestore-7cd55.firebaseapp.com",
+                databaseURL: "https://udemy-d3-firestore-7cd55.firebaseio.com",
+                projectId: "udemy-d3-firestore-7cd55",
+                storageBucket: "udemy-d3-firestore-7cd55.appspot.com",
+                messagingSenderId: "409428371388",
+                appId: "1:409428371388:web:e0db4e5c9d593a191a2db9",
+                measurementId: "G-X9G1XTTDH1"
+            };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            //firebase.analytics();
+            const db = firebase.firestore();
+            //db.settings({ timestampsInSnapshots: true });
+        </script>
 
         <script src="https://d3js.org/d3.v6.js"></script>
         <script src="index.js"></script>
