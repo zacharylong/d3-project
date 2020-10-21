@@ -41,6 +41,7 @@ xAxisGroup.selectAll('text')
     .attr('text-anchor', 'end')
     .attr('fill', 'orange');
 
+    const t = d3.transition().duration(500);
 
 // update function
 const update = (data) => {
@@ -61,19 +62,26 @@ const update = (data) => {
 
     // update current shapes in the DOM
     rects.attr('width', x.bandwidth)
-        .attr('height', d => graphHeight - y(d.orders))
         .attr('fill', 'orange')
         .attr('x', d => x(d.name))
-        .attr('y', d => y(d.orders));
+        // .transition(t)
+        //     .attr('height', d => graphHeight - y(d.orders))
+        //     .attr('y', d => y(d.orders));
 
     // 5. append the enter selection to the DOM
     rects.enter()
         .append('rect')
-        .attr('width', x.bandwidth)
-        .attr('height', d => graphHeight - y(d.orders))
+        // we're already calling this with the tween
+        //.attr('width', x.bandwidth)
+        .attr('height', 0)
         .attr('fill', 'orange')
         .attr('x', d => x(d.name))
-        .attr('y', d => y(d.orders));
+        .attr('y', graphHeight)
+        .merge(rects)
+        .transition(t)
+            .attrTween('width', widthTween)
+            .attr('y', d => y(d.orders))
+            .attr('height', d => graphHeight - y(d.orders));
 
     // call axes
     xAxisGroup.call(xAxis);
@@ -108,4 +116,16 @@ db.collection('dishes').onSnapshot(res => {
 
     update(data);
 
-})
+});
+
+const widthTween = (d) => {
+    //define interpolation
+    let i = d3.interpolate(0, x.bandwidth());
+
+    // return a function which takes in a time ticker 't'
+    return function(t){
+
+        //return the value from passing the ticker into the interpolation
+        return i(t);
+    }
+}
