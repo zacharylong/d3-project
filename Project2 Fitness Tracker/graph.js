@@ -32,6 +32,23 @@ const line = d3.line()
 // line path element
 const path = graph.append('path');
 
+// create dotted line group and append to graph
+const dottedLines = graph.append('g')
+    .attr('class', 'lines')
+    .style('opacity', 0);
+
+// created x dotted line and append to dotted line group
+const xDottedLine = dottedLines.append('line')
+    .attr('stroke', '#aaa')
+    .attr('stroke-width', 1)
+    .attr('stroke-dasharray', 4);
+
+// create y dotted line and append
+const yDottedLine = dottedLines.append('line')
+    .attr('stroke', '#aaa')
+    .attr('stroke-width', 1)
+    .attr('stroke-dasharray', 4);
+
 const update = (data) => {
 
     data = data.filter(item => item.activity == activity);
@@ -67,8 +84,43 @@ const update = (data) => {
         .append('circle')
         .attr('r', 4)
         .attr('cx', d => x(new Date(d.date)))
-        .attr('cy', d  => y(d.distance))
+        .attr('cy', d => y(d.distance))
         .attr('fill', '#ccc');
+
+    graph.selectAll('circle')
+        .on('mouseover', (d,i,n) => {
+            d3.select(n[i])
+                .transition().duration(100)
+                .attr('r', 8)
+                .attr('fill', '#fff');
+
+            // set the x dotted line coords (x1,x2,y1,y2)
+            xDottedLine
+                .attr('x1', x(new Date(d.date)))
+                .attr('x2', x(new Date(d.date)))
+                .attr('y1', graphHeight)
+                .attr('y2', y(d.distance));
+
+            // set the y dotted line coords (x1,x2,y1,y2)
+            yDottedLine
+                .attr('x1', 0)
+                .attr('x2', x(new Date(d.date)))
+                .attr('y1', y(d.distance))
+                .attr('y2', y(d.distance));
+            
+            // show the dotted line group (.style, opacity)
+            dottedLines.style('opacity', 1);
+            
+        })
+        .on('mouseleave', (d,i,n) => {
+            d3.select(n[i])
+                .transition().duration(100)
+                .attr('r', 4)
+                .attr('fill', '#ccc');
+
+            // hide the dotted line group (.style, opacity)
+            dottedLines.style('opacity', 0)
+        });
 
     // create axes
     const xAxis = d3.axisBottom(x)
