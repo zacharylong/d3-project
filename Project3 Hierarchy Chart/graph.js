@@ -1,12 +1,12 @@
-const dims = { height: 500, width: 100 };
+const dims = { height: 500, width: 1100 };
 
 const svg = d3.select('.canvas')
     .append('svg')
     .attr('width', dims.width + 100)
-    .attr('height', dims.height + 100)
+    .attr('height', dims.height + 100);
 
 const graph = svg.append('g')
-    .attr('transform', 'translate(50,50)');
+    .attr('transform', 'translate(50, 50)');
 
 // data strat
 const stratify = d3.stratify()
@@ -32,19 +32,20 @@ const update = (data) => {
     // get updated root node data
     const rootNode = stratify(data);
 
-    const treeData = tree(rootNode);
+    const treeData = tree(rootNode).descendants();
 
     //get node selection and join data
     const nodes = graph.selectAll('.node')
-        .data(treeData.descendants());
+        .data(treeData);
 
     // get link selection and join data
     const links = graph.selectAll('.link')
-        .data(treeData.links());
+        .data(tree(rootNode).links());
 
     // enter new links
     links.enter()
         .append('path')
+        .transition().duration(300)
         .attr('class', 'link')
         .attr('fill', 'none')
         .attr('stroke', '#aaa')
@@ -70,16 +71,18 @@ const update = (data) => {
         .attr('stroke-width', 2)
         .attr('height', 50)
         .attr('width', d => d.data.name.length * 20)
-        .attr('transform', d => {
-            var x = d.data.name.length * 10
-            return `translate(${-x}, -25)`
+        .attr('transform', (d, i, n) => {
+            let x = d.data.name.length * 10;
+            // var x = d.data.name.length * 10
+            return `translate(${-x}, -25)`;
         });
 
     // append name text
     enterNodes.append('text')
         .attr('text-anchor', 'middle')
+        .attr('dy', 5)
         .attr('fill', 'white')
-        .attr(d => d.data.name)
+        .attr(d => d.data.name);
 
 
 };
